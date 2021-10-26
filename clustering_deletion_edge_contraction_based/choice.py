@@ -35,8 +35,17 @@ def choice_weight_softmax_random(G, extractable_edges):
     return extractable_edges[id[0]]
 
 
-def choice_weight_greedy(G):
-    pass
+def choice_weight_greedy(G, extractable_edges):
+    max_w = -math.inf
+    max_edge = None
+
+    for edge in extractable_edges:
+        val = G[edge[0]][edge[1]]['weight']
+        if val > max_w:
+            max_w = val
+            max_edge = edge
+
+    return max_edge
 
 
 def choice_entropy_greedy(G):

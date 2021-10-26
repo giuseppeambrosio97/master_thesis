@@ -58,7 +58,7 @@ def clustering_deletion_random_edge_contraction(G):
     value = 0
 
     while (extractable_edges):
-        e = choice(G, extractable_edges, choice_weight_softmax_random)
+        e = choice(G, extractable_edges, choice_weight_greedy)
         value += edge_contraction(G, e)
         extractable_edges = list(G.edges)
 
