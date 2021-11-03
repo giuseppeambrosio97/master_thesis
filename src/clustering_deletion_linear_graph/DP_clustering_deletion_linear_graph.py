@@ -1,5 +1,5 @@
 import math
-from linear_graph.ULCompressedLinearGraph import ULCompressedLinearGraph
+from src.linear_graph.ULCompressedLinearGraph import ULCompressedLinearGraph
 
 
 # def clustering_deletion_linear_graph(upperBoundCompressedLinearGraph):
@@ -69,4 +69,4 @@ def DP_clustering_deletion_linear_graph(ul_LinearGraph):
             val = min(val, p[t-1]+gl(ul_LinearGraph, t, i))
         p.append(val)
 
-    return p
+    return p[len(p)-1]
