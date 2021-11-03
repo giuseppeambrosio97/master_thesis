@@ -38,7 +38,7 @@ def edge_contraction(G, e):
     #     value += G[e[1]][node]['weight']
     #     G.remove_edge(e[1],node)
 
-    mapping = {e[0]: e[0]+e[1]}
+    mapping = {e[0]: e[0]+"-"+e[1]}
     nx.relabel_nodes(G, mapping, copy=False)
     G.remove_node(e[1])
 
@@ -58,7 +58,7 @@ def clustering_deletion_random_edge_contraction(G):
     value = 0
 
     while (extractable_edges):
-        e = choice(G, extractable_edges, choice_weight_greedy)
+        e = choice(G, extractable_edges, choice_weight_softmax_random)
         value += edge_contraction(G, e)
         extractable_edges = list(G.edges)
 
