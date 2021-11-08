@@ -1,4 +1,4 @@
-from ULCompressedLinearGraph import *
+from src.linear_graph.ULCompressedLinearGraph import *
 
 if __name__ == "__main__":
     upperBound = [2, 2, 3, 5, 6, 6]

@@ -3,7 +3,7 @@ import time
 import matplotlib.pyplot as p
 
 if __name__ == "__main__":
-    fb = nx.read_edgelist('/home/peppe/Scrivania/master_thesis/clustering_deletion_edge_contraction_based/data/FacebookSNA-kaggle/facebook-combined.txt',
+    fb = nx.read_edgelist('/home/peppe/Scrivania/master_thesis/src/clustering_deletion_edge_contraction_based/data/FacebookSNA-kaggle/facebook-combined.txt',
                           create_using=nx.Graph(), nodetype=str)
 
     # print(len(list(fb.nodes)))
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # value, nodes = clustering_deletion_random_edge_contraction(G)
     start_k = time.time()
     value, nodes = k_clustering_deletion_random_edge_contraction(
-        fb, len(list(fb.edges)))
+        fb, 1)
     end_k = time.time() - start_k
     # print("value ", value, " nodes ", nodes)
     print("value ", value)

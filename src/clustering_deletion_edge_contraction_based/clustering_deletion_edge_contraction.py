@@ -1,5 +1,5 @@
 import networkx as nx
-from choice import *
+from src.clustering_deletion_edge_contraction_based.choice import *
 
 
 def edge_contraction(G, e):
@@ -8,19 +8,19 @@ def edge_contraction(G, e):
 
     value = 0
 
-    A = vicini0 - vicini1
-    B = vicini0 & vicini1
+    A = vicini0 - vicini1  # vicini di e[0] e non di e[1]
+    B = vicini0 & vicini1  # vicini di e[0] e di e[1]
     C = vicini1 - vicini0
 
     for node in B:
         G[e[0]][node]['weight'] += G[e[1]][node]['weight']
 
-    for node in A:
+    for node in A:  # removed
         if node != e[1]:
             value += G[e[0]][node]['weight']
             G.remove_edge(e[0], node)
 
-    for node in C:
+    for node in C:  # removed
         if node != e[0]:
             value += G[e[1]][node]['weight']
             G.remove_edge(e[1], node)
@@ -45,7 +45,7 @@ def edge_contraction(G, e):
     return value
 
 
-def clustering_deletion_random_edge_contraction(G):
+def clustering_deletion_random_edge_contraction(G, choice_method):
     """
     INPUT:
         G: networkx graph
@@ -58,14 +58,14 @@ def clustering_deletion_random_edge_contraction(G):
     value = 0
 
     while (extractable_edges):
-        e = choice(G, extractable_edges, choice_weight_softmax_random)
+        e = choice(G, extractable_edges, method=choice_method)
         value += edge_contraction(G, e)
         extractable_edges = list(G.edges)
 
     return value, G.nodes
 
 
-def k_clustering_deletion_random_edge_contraction(G, k):
+def k_clustering_deletion_random_edge_contraction(G, k, choice_method):
     """
     INPUT:
         G: networkx graph
@@ -78,9 +78,10 @@ def k_clustering_deletion_random_edge_contraction(G, k):
     min_val = math.inf
     min_partition = None
 
-    for i in range(k):
+    for _ in range(k):
         H = G.copy()
-        val, partition = clustering_deletion_random_edge_contraction(H)
+        val, partition = clustering_deletion_random_edge_contraction(
+            H, choice_method)
         if val < min_val:
             min_val = val
             min_partition = partition
