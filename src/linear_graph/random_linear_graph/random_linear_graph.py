@@ -64,7 +64,7 @@ def random_linear_graph(n):
     while u[-1] < n and i <= n-2:
         d = getDistribution(i, u[-1], n, method=real_uniform_distribution)
         d /= d.sum()
-        ui = np.random.choice(range(max(u[-1], i+1), n+1), size=1, p=d)[0]
+        ui = np.random.choice(range(max(u[-1], i+1), n+1), size=1, p=d)
         u.append(ui)
         i += 1
 

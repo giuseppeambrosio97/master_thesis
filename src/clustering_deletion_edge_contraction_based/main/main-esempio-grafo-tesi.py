@@ -1,4 +1,4 @@
-from clustering_deletion_edge_contraction import *
+from src.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import *
 import time
 
 if __name__ == "__main__":
@@ -8,7 +8,10 @@ if __name__ == "__main__":
     nx.set_edge_attributes(G, 1, 'weight')
     # value, nodes = clustering_deletion_random_edge_contraction(G)
     start_k = time.time()
-    value, nodes = k_clustering_deletion_random_edge_contraction(G, 1)
+    value, nodes = k_clustering_deletion_random_edge_contraction(
+        G, 1, choice_method=choice_weight_greedy)
     end_k = time.time() - start_k
     print("value ", value, " nodes ", nodes)
     print("execution time ", end_k)
+
+

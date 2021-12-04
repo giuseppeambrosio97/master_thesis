@@ -124,3 +124,29 @@ def choice_deleted_edge_greedy(G, extractable_edges):
 
 def choice(G, extractable_edges, method):
     return method(G, extractable_edges)
+
+
+def choice_deleted_edge_greedy_value(G, extractable_edges):
+    value_min = math.inf
+    e_min = None
+    for e in extractable_edges:
+        value = 0  # numero di edge da eliminare se contratto l'edge e
+
+        vicini0 = set(G.neighbors(e[0]))
+        vicini1 = set(G.neighbors(e[1]))
+        A = vicini0 - vicini1
+        C = vicini1 - vicini0
+
+        for node in A:  # removed
+            if node != e[1]:
+                value += G[e[0]][node]['weight']
+
+        for node in C:  # removed
+            if node != e[0]:
+                value += G[e[1]][node]['weight']
+
+        if value < value_min:
+            value_min = value
+            e_min = e
+
+    return e_min,value_min

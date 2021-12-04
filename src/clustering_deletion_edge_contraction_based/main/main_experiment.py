@@ -3,7 +3,7 @@ from src.clustering_deletion_edge_contraction_based.util_exp import experiments,
 
 if __name__ == "__main__":
     datasets = {
-        "FB1": "data/cur_data_exp/0.edges",
+        "FB1": "data/cur_data_exp/Facebook-Stan",
         # "FB2": "data/cur_data_exp/107.edges",
         # "bio-CE-GT": "data/bio/bio-CE-GT.edges",
         # # "bio-celegans": "data/bio/bio-celegans.edges",
