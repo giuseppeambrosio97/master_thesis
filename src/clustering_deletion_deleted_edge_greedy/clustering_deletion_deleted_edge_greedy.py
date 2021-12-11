@@ -53,7 +53,6 @@ class RangedHeap:
 
     def adjust(self, e0, e1, old_f, new_f):
         e = self.get_e(e0, e1)
-        # print("adjust edge ", e, " old f ", old_f, " new f ", new_f)
         self.delete_e(e[0], e[1], old_f)
         self.add(e[0], e[1], new_f)
 
@@ -119,21 +118,6 @@ def edge_contraction(G, e, rangedHeap):
 
     for node in Ne1_e0:  # removed
         rangedHeap.delete_e(e[1], node, G[e[1]][node]['f'])
-        ### E' necessario se poi cancello il node e[1]?!
-        # G.remove_edge(e[1], node)
-
-    # for node in vicini0:
-    #   if node in vicini1: #B
-    #     G[e[0]][node]['weight'] += G[e[1]][node]['weight']
-    #   elif node != e[1]:  #A
-    #     value += G[e[0]][node]['weight']
-    #     G.remove_edge(e[0],node)
-
-    # for node in vicini1:
-    #   if node not in vicini0: #C
-    #     print("belloo ", node)
-    #     value += G[e[1]][node]['weight']
-    #     G.remove_edge(e[1],node)
 
     G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
     G.remove_node(e[1])
@@ -143,15 +127,9 @@ def edge_contraction(G, e, rangedHeap):
         G[e[0]][node]['f'] = new_f
         rangedHeap.add(e[0], node, new_f)
 
-    # print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    # rangedHeap.print_fs()
-    # print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     toAdjust = G.edges(list(Ne0_e1)+list(Ne0e1)+list(Ne1_e0))
-    # print("ABC ", list(Ne0_e1)+list(Ne0e1)+list(Ne1_e0))
-    # print("toAdjust " , toAdjust)
     for edge in toAdjust:
       if edge[0] != e[0] and edge[1] != e[0]:
-        # print("adjust edge ", edge)
         new_f = f(G, edge)
         old_f = G[edge[0]][edge[1]]['f']
         if new_f != old_f:
@@ -162,25 +140,9 @@ def edge_contraction(G, e, rangedHeap):
 
 def clustering_deleteting_choice_deleted_edge_greedy(G):
     rangedHeap = RangedHeap(G)
-    # rangedHeap.print_fs()
-    # print("_-------------------------------_")
     value = 0
     while len(rangedHeap) != 0:
         e = rangedHeap.getMin()
-        # print("edge contratto ", e)
-        # print("edge contratto super nodi ",
-        #       G.nodes[e[0]]["labels"], G.nodes[e[1]]["labels"])
         value += G[e[0]][e[1]]['f']
         edge_contraction(G, e, rangedHeap)
-        # print("size  ", len(rangedHeap))
-        # rangedHeap.print_fs()
-        # print("_-------------------------------_")
-
-        # print("GGGGGGGGGGGG")
-        # for node in G.nodes:
-        #   print("super nodi ", G.nodes[node]["labels"])
-        #   print("-----> ", node)
-        # for edge in G.edges:
-        #   print("-----> ", edge)
-
     return value
