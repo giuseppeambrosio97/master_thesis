@@ -1,5 +1,5 @@
 class RangedHeap:
-    def __init__(self, G) -> None:
+    def __init__(self, G):
         self.size = len(G.edges)
         self.fs = [{} for _ in range(len(G.nodes))]
         self.bool_fs = []
@@ -31,23 +31,12 @@ class RangedHeap:
         self.size -= 1
 
         if len(self.fs[f]) == 0:
-            for i in range(len(self.bool_fs)):
-                if f == self.bool_fs[i]:
-                    break
-            del self.bool_fs[i]
+            self.binary_search_delete(f)
 
     def add(self, e0, e1, f):
         e = self.get_e(e0, e1)
         if len(self.fs[f]) == 0:
-            if f < self.bool_fs[0]:
-                self.bool_fs.insert(0, f)
-            elif f > self.bool_fs[-1]:
-                self.bool_fs.append(f)
-            else:
-                for i in range(1, len(self.bool_fs)):
-                    if self.bool_fs[i-1] < f and f < self.bool_fs[i]:
-                        break
-                self.bool_fs.insert(i, f)
+            self.binary_search_add(f)
         self.fs[f][e] = e
         self.size += 1
 
@@ -55,6 +44,40 @@ class RangedHeap:
         e = self.get_e(e0, e1)
         self.delete_e(e[0], e[1], old_f)
         self.add(e[0], e[1], new_f)
+    
+    def binary_search_delete(self, x):
+        l = 0
+        r = len(self.bool_fs)-1
+
+        while l <= r:
+            c = (l + r) // 2
+            if self.bool_fs[c] == x:
+                break
+            elif self.bool_fs[c] < x:
+                l = c + 1
+            else:
+                r = c - 1
+        del self.bool_fs[c]
+
+    def binary_search_add(self, x):
+        if x < self.bool_fs[0]:
+            self.bool_fs.insert(0, x)
+        elif x > self.bool_fs[-1]:
+            self.bool_fs.append(x)
+        else:
+            l = 0
+            r = len(self.bool_fs)-1
+
+            while l <= r:
+                c = (l + r) // 2
+                if self.bool_fs[c] < x:
+                    if x < self.bool_fs[c+1]:
+                        break
+                    else:
+                        l = c + 1
+                else:
+                    r = c - 1
+            self.bool_fs.insert(c+1, x)
 
     def get_e(self, e0, e1):
         return (e0, e1) if int(e0) < int(e1) else (e1, e0)
@@ -98,7 +121,6 @@ def edge_contraction(G, e, rangedHeap):
     vicini0 = set(G.neighbors(e[0]))
     vicini1 = set(G.neighbors(e[1]))
 
-
     Ne0_e1 = vicini0 - vicini1  # vicini di e[0] e non di e[1]
     Ne0_e1.remove(e[1])
 
@@ -129,13 +151,12 @@ def edge_contraction(G, e, rangedHeap):
 
     toAdjust = G.edges(list(Ne0_e1)+list(Ne0e1)+list(Ne1_e0))
     for edge in toAdjust:
-      if edge[0] != e[0] and edge[1] != e[0]:
-        new_f = f(G, edge)
-        old_f = G[edge[0]][edge[1]]['f']
-        if new_f != old_f:
-            G[edge[0]][edge[1]]['f'] = new_f
-            rangedHeap.adjust(edge[0], edge[1], old_f, new_f)
-
+        if edge[0] != e[0] and edge[1] != e[0]:
+            new_f = f(G, edge)
+            old_f = G[edge[0]][edge[1]]['f']
+            if new_f != old_f:
+                G[edge[0]][edge[1]]['f'] = new_f
+                rangedHeap.adjust(edge[0], edge[1], old_f, new_f)
 
 
 def clustering_deleteting_choice_deleted_edge_greedy(G):
