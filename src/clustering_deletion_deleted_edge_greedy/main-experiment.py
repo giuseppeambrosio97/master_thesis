@@ -3,7 +3,7 @@ import time
 from src.clustering_deletion_edge_contraction_based.util_exp import read_graph
 from src.clustering_deletion_deleted_edge_greedy.clustering_deletion_deleted_edge_greedy import clustering_deleteting_choice_deleted_edge_greedy
 if __name__ == "__main__":
-    dataset = "data/cur_data_exp/FB1"
+    dataset = "data/bio/bio-SC-CC"
     G = read_graph(dataset)
     nx.set_edge_attributes(G, 1, 'weight')
     nx.set_edge_attributes(G, -1, 'f')

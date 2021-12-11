@@ -1,13 +1,12 @@
 class RangedHeap:
     def __init__(self, G) -> None:
-        self.G = G
-        self.size = len(self.G.edges)
-        self.fs = [{} for _ in range(len(self.G.nodes))]
+        self.size = len(G.edges)
+        self.fs = [{} for _ in range(len(G.nodes))]
         self.bool_fs = []
 
-        for e in self.G.edges:
-            val = f(self.G, e)
-            self.G[e[0]][e[1]]['f'] = val
+        for e in G.edges:
+            val = f(G, e)
+            G[e[0]][e[1]]['f'] = val
             e = self.get_e(e[0], e[1])
             self.fs[val][e] = e
 
@@ -25,12 +24,11 @@ class RangedHeap:
         else:
             print("RangedHeap is empty")
 
-    def delete_e(self, e0, e1):
+    def delete_e(self, e0, e1, f):
         e = self.get_e(e0, e1)
-        f = self.G[e[0]][e[1]]['f']
+        # f = self.G[e[0]][e[1]]['f']
         del self.fs[f][e]
         self.size -= 1
-        # self.fs[f].pop(str(e))
 
         if len(self.fs[f]) == 0:
             for i in range(len(self.bool_fs)):
@@ -53,13 +51,11 @@ class RangedHeap:
         self.fs[f][e] = e
         self.size += 1
 
-    def adjust(self, e0, e1, f):
+    def adjust(self, e0, e1, old_f, new_f):
         e = self.get_e(e0, e1)
-        old_f = self.G[e[0]][e[1]]['f']
-        if old_f != f:
-            self.delete_e(e[0], e[1])
-            self.add(e[0], e[1], f)
-            self.G[e[0]][e[1]]['f'] = f
+        # print("adjust edge ", e, " old f ", old_f, " new f ", new_f)
+        self.delete_e(e[0], e[1], old_f)
+        self.add(e[0], e[1], new_f)
 
     def get_e(self, e0, e1):
         return (e0, e1) if int(e0) < int(e1) else (e1, e0)
@@ -74,10 +70,6 @@ class RangedHeap:
 
     def prinf_bool_fs(self):
         print(self.bool_fs)
-
-    # def print_d(self):
-    #   for key,val in self.d.items():
-    #     print("key ", key, " val ", val)
 
     def __len__(self):
         return self.size
@@ -118,19 +110,17 @@ def edge_contraction(G, e, rangedHeap):
 
     for node in Ne0e1:
         G[e[0]][node]['weight'] += G[e[1]][node]['weight']
-        rangedHeap.delete_e(e[0], node)
-        rangedHeap.delete_e(e[1], node)
+        rangedHeap.delete_e(e[0], node, G[e[0]][node]['f'])
+        rangedHeap.delete_e(e[1], node, G[e[1]][node]['f'])
 
     for node in Ne0_e1:  # removed
-        # if node != e[1]:
-        rangedHeap.delete_e(e[0], node)
+        rangedHeap.delete_e(e[0], node, G[e[0]][node]['f'])
         G.remove_edge(e[0], node)
 
     for node in Ne1_e0:  # removed
-        # if node != e[0]:
-        rangedHeap.delete_e(e[1], node)
+        rangedHeap.delete_e(e[1], node, G[e[1]][node]['f'])
         ### E' necessario se poi cancello il node e[1]?!
-        G.remove_edge(e[1], node)
+        # G.remove_edge(e[1], node)
 
     # for node in vicini0:
     #   if node in vicini1: #B
@@ -149,12 +139,24 @@ def edge_contraction(G, e, rangedHeap):
     G.remove_node(e[1])
 
     for node in Ne0e1:
-      rangedHeap.add(e[0], node, f(G, (e[0], node)))
+        new_f = f(G, (e[0], node))
+        G[e[0]][node]['f'] = new_f
+        rangedHeap.add(e[0], node, new_f)
 
+    # print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    # rangedHeap.print_fs()
+    # print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     toAdjust = G.edges(list(Ne0_e1)+list(Ne0e1)+list(Ne1_e0))
+    # print("ABC ", list(Ne0_e1)+list(Ne0e1)+list(Ne1_e0))
+    # print("toAdjust " , toAdjust)
     for edge in toAdjust:
       if edge[0] != e[0] and edge[1] != e[0]:
-        rangedHeap.adjust(edge[0], edge[1], f(G, edge))
+        # print("adjust edge ", edge)
+        new_f = f(G, edge)
+        old_f = G[edge[0]][edge[1]]['f']
+        if new_f != old_f:
+            G[edge[0]][edge[1]]['f'] = new_f
+            rangedHeap.adjust(edge[0], edge[1], old_f, new_f)
 
 
 
@@ -162,18 +164,13 @@ def clustering_deleteting_choice_deleted_edge_greedy(G):
     rangedHeap = RangedHeap(G)
     # rangedHeap.print_fs()
     # print("_-------------------------------_")
-    conta = 0
     value = 0
     while len(rangedHeap) != 0:
         e = rangedHeap.getMin()
         # print("edge contratto ", e)
         # print("edge contratto super nodi ",
-            #   G.nodes[e[0]]["labels"], G.nodes[e[1]]["labels"])
+        #       G.nodes[e[0]]["labels"], G.nodes[e[1]]["labels"])
         value += G[e[0]][e[1]]['f']
-        conta +=1
-
-        print("value ", value)
-        print("conta ", conta)
         edge_contraction(G, e, rangedHeap)
         # print("size  ", len(rangedHeap))
         # rangedHeap.print_fs()
@@ -183,5 +180,7 @@ def clustering_deleteting_choice_deleted_edge_greedy(G):
         # for node in G.nodes:
         #   print("super nodi ", G.nodes[node]["labels"])
         #   print("-----> ", node)
+        # for edge in G.edges:
+        #   print("-----> ", edge)
 
     return value
