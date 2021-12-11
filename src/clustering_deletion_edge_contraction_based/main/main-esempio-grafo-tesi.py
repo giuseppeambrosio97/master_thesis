@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # value, nodes = clustering_deletion_random_edge_contraction(G)
     start_k = time.time()
     value, nodes = k_clustering_deletion_random_edge_contraction(
-        G, 1, choice_method=choice_weight_greedy)
+        G, 1, choice_method=choice_deleted_edge_greedy)
     end_k = time.time() - start_k
     print("value ", value, " nodes ", nodes)
     print("execution time ", end_k)
