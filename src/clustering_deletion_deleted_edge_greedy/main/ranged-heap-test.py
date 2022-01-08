@@ -1,6 +1,7 @@
 import networkx as nx
 import time
 from scipy.special import softmax
+import copy
 
 
 from clustering_deletion_deleted_edge_greedy.deleted_edge_greedy import RangedHeap

@@ -150,3 +150,46 @@ def choice_deleted_edge_greedy_value(G, extractable_edges):
             e_min = e
 
     return e_min,value_min
+
+
+def choice_max_Ne0_e1(G, extractable_edges):
+
+    e_max = None
+    value_max = -1
+    for e in extractable_edges:
+        vicini0 = set(G.neighbors(e[0]))
+        vicini0.remove(e[1])
+        vicini1 = set(G.neighbors(e[1]))
+        vicini1.remove(e[0])
+
+        Ne0_e1, Ne0e1, Ne1_e0 = vicini0 - vicini1, vicini0 & vicini1, vicini1 - vicini0
+
+        value_AC = 0
+
+        for node in Ne0_e1:  # removed
+            value_AC += G[e[0]][node]['weight']
+
+        for node in Ne1_e0:  # removed
+            value_AC += G[e[1]][node]['weight']
+
+        value_B = G[e[0]][e[1]]['weight']
+
+        for node in Ne0e1:  # removed
+            value_B += G[e[1]][node]['weight']
+            value_B += G[e[0]][node]['weight']
+
+        value_AC_plus_B = value_AC + value_B
+
+        # print("edge {} value_B {} valueAC {}".format(e,value_B,value_AC))
+
+        pvalue_B = value_B / value_AC_plus_B
+
+        # pvalue_AC = 1 - pvalue_B
+        # print("->>> pvalueB {} pvalueAC {}".format(pvalue_B, 1 - pvalue_B))
+        if value_max < pvalue_B:
+            value_max = pvalue_B
+            e_max = e
+
+    # print("***********************************************************take edge ", e_max)
+    return e_max
+

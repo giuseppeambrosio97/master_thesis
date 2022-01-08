@@ -1,5 +1,5 @@
 from src.linear_graph.ULCompressedLinearGraph import ULCompressedLinearGraph
-from src.clustering_deletion_linear_graph.DP_clustering_deletion_linear_graph import DP_clustering_deletion_linear_graph
+from clustering_deletion_linear_graph.dynamic_programming import DP_clustering_deletion_linear_graph
 
 
 if __name__ == "__main__":
