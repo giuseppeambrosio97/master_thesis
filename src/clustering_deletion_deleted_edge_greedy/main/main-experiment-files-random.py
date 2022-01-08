@@ -1,7 +1,8 @@
 import networkx as nx
 import time
 from src.clustering_deletion_edge_contraction_based.util_exp import read_graph
-from src.clustering_deletion_deleted_edge_greedy.clustering_deletion_deleted_edge_greedy import clustering_deleteting_choice_deleted_edge_greedy
+from clustering_deletion_deleted_edge_greedy.random_edge_greedy import clustering_deleteting_random_choice_deleted_edge_greedy,k_clustering_deletion_random_edge_contraction
+
 if __name__ == "__main__":
 
     datasets = [
@@ -12,8 +13,9 @@ if __name__ == "__main__":
         # "data/bio/bio-HS-HT.edges",
         # "data/bio/bio-grid-plant.edges",
         # "data/bio/bio-grid-worm.edges"
-    ] 
+    ]
 
+    s = ""
     for dataset in datasets:
         G = read_graph(dataset)
         nx.set_edge_attributes(G, 1, 'weight')
@@ -24,7 +26,10 @@ if __name__ == "__main__":
             G.nodes[node]["labels"] = str(node)
 
         start_k = time.time()
-        value = clustering_deleteting_choice_deleted_edge_greedy(G)
+        value = k_clustering_deletion_random_edge_contraction(G,20)
         end_k = time.time() - start_k
-        print("execution time ", end_k)
-        print("value ", value)
+        s += "dataset " + str(dataset) + "\n"
+        s += "execution time " + str(end_k) + "\n"
+        s += "value " + str(value) + "\n"
+        s += "*********************************"
+    print(s)
