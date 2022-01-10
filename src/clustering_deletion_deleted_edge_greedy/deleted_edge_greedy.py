@@ -183,6 +183,7 @@ def edge_contraction(G, e, rangedHeap):
     G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
     G.remove_node(e[1])
 
+
     for node in Ne0e1:
         new_f = f(G, (e[0], node))
         G[e[0]][node]['f'] = new_f
@@ -199,11 +200,13 @@ def edge_contraction(G, e, rangedHeap):
             if new_f != old_f:
                 G[edge[0]][edge[1]]['f'] = new_f
                 rangedHeap.adjust(edge[0], edge[1], old_f, new_f)
+    
 
 
 def deleted_edge_greedy(G):
     rangedHeap = RangedHeap(G)
     sol_value = 0
+
     while len(rangedHeap) != 0:
         e, val = rangedHeap.getMin(G)
         sol_value += val

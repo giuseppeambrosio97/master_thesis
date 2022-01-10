@@ -5,7 +5,8 @@ from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G imp
 if __name__ == "__main__":
 
     datasets = [
-        "data/cur_data_exp/FB1",
+        # "data/cur_data_exp/FB1",
+        "data/cur_data_exp/FB1 copy 2",
         # "data/cur_data_exp/FB2",
         # "data/bio/bio-CE-GT",
         # "data/bio/bio-SC-CC",
