@@ -4,14 +4,14 @@ import math
 class RangedHeap:
     def __init__(self, G):
         self.size = len(G.edges)
-        self.fs = [{} for _ in range(len(G.nodes))]
+        self.fs = [set() for _ in range(len(G.nodes))]
         self.bool_fs = []
 
         for e in G.edges:
             val = f_simple_graph(G, e)
             G[e[0]][e[1]]['f'] = val
             e = self.get_e(e[0], e[1])
-            self.fs[val][e] = e
+            self.fs[val].add(e)
 
         for id, id_map in enumerate(self.fs):
             if len(id_map) != 0:
@@ -32,17 +32,17 @@ class RangedHeap:
     def getMinTwins(self, G):
         weight_max = -math.inf
         edge_to_pick = None
-        for _, e in self.fs[self.bool_fs[0]].items():
+        for e in self.fs[self.bool_fs[0]]:
             w = G[e[0]][e[1]]['weight']
             if weight_max < w:
                 weight_max = w
                 edge_to_pick = e
-        del self.fs[self.bool_fs[0]][edge_to_pick]
+        self.fs[self.bool_fs[0]].remove(edge_to_pick)
         return edge_to_pick
 
     def delete_e(self, e0, e1, f):
         e = self.get_e(e0, e1)
-        del self.fs[f][e]
+        self.fs[f].remove(e)
         self.size -= 1
 
         if len(self.fs[f]) == 0:
@@ -52,7 +52,7 @@ class RangedHeap:
         e = self.get_e(e0, e1)
         if len(self.fs[f]) == 0:
             self.binary_search_add(f)
-        self.fs[f][e] = e
+        self.fs[f].add(e)
         self.size += 1
 
     def adjust(self, e0, e1, old_f, new_f):
@@ -102,8 +102,8 @@ class RangedHeap:
     def print_fs(self):
         for id, id_map in enumerate(self.fs):
             values = ""
-            for key, value in id_map.items():
-                values += " " + str(value)
+            for e in id_map:
+                values += " " + str(e)
             s = "[" + str(id) + "]->" + values + "\n"
             print(s)
 
@@ -246,6 +246,7 @@ def check_solution(G,G_sol,val):
 
 def deleted_edge_greedy(G):
     rangedHeap = RangedHeap(G)
+
 
     sol_value = 0
 
