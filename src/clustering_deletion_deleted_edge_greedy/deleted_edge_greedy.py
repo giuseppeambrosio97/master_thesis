@@ -8,7 +8,7 @@ class RangedHeap:
         self.bool_fs = []
 
         for e in G.edges:
-            val = f(G, e)
+            val = f_simple_graph(G, e)
             G[e[0]][e[1]]['f'] = val
             e = self.get_e(e[0], e[1])
             self.fs[val][e] = e
@@ -75,7 +75,9 @@ class RangedHeap:
         del self.bool_fs[c]
 
     def binary_search_add(self, x):
-        if x < self.bool_fs[0]:
+        if len(self.bool_fs) == 0:
+            self.bool_fs.append(x)
+        elif x < self.bool_fs[0]:
             self.bool_fs.insert(0, x)
         elif x > self.bool_fs[-1]:
             self.bool_fs.append(x)
@@ -140,8 +142,11 @@ def split_neighborhood(G, e):
 
     return vicini0 - vicini1, vicini0 & vicini1, vicini1 - vicini0
 
+def f_simple_graph(G,e):
+    A, C = xor(G, e)
+    return len(A) + len(C)
 
-def f(G, e):
+def f_multi_graph(G, e):
     A, C = xor(G, e)
     value = 0
 
@@ -153,6 +158,11 @@ def f(G, e):
 
     return value
 
+
+
+def f_multi_graph_v2(G, e):
+    A, C = xor(G, e)
+    return sum([G[e[0]][node]['weight'] for node in A]) + sum([G[e[1]][node]['weight'] for node in C])
 
 def f_with_sets(G, e, Ne0_e1, Ne1_e0):
     value = 0
@@ -185,7 +195,7 @@ def edge_contraction(G, e, rangedHeap):
 
 
     for node in Ne0e1:
-        new_f = f(G, (e[0], node))
+        new_f = f_multi_graph(G, (e[0], node))
         G[e[0]][node]['f'] = new_f
         rangedHeap.add(e[0], node, new_f)
 
@@ -195,7 +205,7 @@ def edge_contraction(G, e, rangedHeap):
     # toAdjust = G.edges(list(Ne0_e1)+list(Ne1_e0))
     for edge in toAdjust:
         if edge[0] != e[0] and edge[1] != e[0]:
-            new_f = f(G, edge)
+            new_f = f_multi_graph(G, edge)
             old_f = G[edge[0]][edge[1]]['f']
             if new_f != old_f:
                 G[edge[0]][edge[1]]['f'] = new_f
@@ -203,12 +213,45 @@ def edge_contraction(G, e, rangedHeap):
     
 
 
+
+def check_solution(G,G_sol,val):
+
+    cliques = []
+    n_nodes = 0
+    for node in G_sol.nodes:
+        clique = G_sol.nodes[node]["labels"].split("-")
+        n_nodes += len(clique)
+        cliques.append(clique)
+    
+    if n_nodes != len(G.nodes):
+        return "Il numero dei nodi non coincide"
+    
+    def isClique(G,clique):
+        for i in range(len(clique)):
+            for j in range(i+1,len(clique)):
+                if not G.has_edge(clique[i],clique[j]):
+                    return False
+                else:
+                    G.remove_edge(clique[i], clique[j])
+        return True
+    
+    for clique in cliques:
+        if not isClique(G,clique):
+            return "L'insieme di vertici {} non è una clique nel grafo di input".format(clique)
+    if val == len(G.edges):
+        return True
+    else:
+        return "val = {} ed è diverso dal numero di edge rimanenti {} se eliminate le clique ".format(val,len(G.edges))
+
+
 def deleted_edge_greedy(G):
     rangedHeap = RangedHeap(G)
+
     sol_value = 0
 
     while len(rangedHeap) != 0:
         e, val = rangedHeap.getMin(G)
         sol_value += val
         edge_contraction(G, e, rangedHeap)
+
     return sol_value
