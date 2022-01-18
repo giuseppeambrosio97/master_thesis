@@ -7,10 +7,10 @@ if __name__ == "__main__":
     G = nx.Graph(edge_list)
     nx.set_edge_attributes(G, 1, 'weight')
     nx.set_edge_attributes(G, -1, 'f')
-    nx.set_node_attributes(G, "", "labels")
+    nx.set_node_attributes(G, "", "clique")
 
     for node in G.nodes:
-        G.nodes[node]["labels"] = str(node)
+        G.nodes[node]["clique"] = str(node)
 
     start_k = time.time()
     value = clustering_deleteting_choice_deleted_edge_greedy(G)

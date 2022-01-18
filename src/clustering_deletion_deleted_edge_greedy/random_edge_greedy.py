@@ -205,7 +205,7 @@ def edge_contraction(G, e, rangedHeap):
         rangedHeap.delete_e(e[0], node, G[e[0]][node]['f'])
         rangedHeap.delete_e(e[1], node, G[e[1]][node]['f'])
 
-    G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
+    G.nodes[e[0]]["clique"] += "-" + G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
     for node in Ne0e1:
@@ -271,7 +271,6 @@ def fork_clustering_deleteting_random_choice_deleted_edge_greedy(G, fork_k, deep
         H, deep_k, rangedHeap_H)
     rangedHeap_min = rangedHeap_H
     G_min = H
-
 
     for _ in range(fork_k):
         H = G.copy()

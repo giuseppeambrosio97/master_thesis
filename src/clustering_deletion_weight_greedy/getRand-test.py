@@ -7,10 +7,10 @@ if __name__ == "__main__":
                  ('7', '9'), ('8', '9'), ('3', '4'), ('3', '5'), ('3', '6'), ('4', '6'), ('4', '5'), ('5', '6')]
     G = nx.Graph(edge_list)
     nx.set_edge_attributes(G, 1, 'weight')
-    nx.set_node_attributes(G, "", "labels")
+    nx.set_node_attributes(G, "", "clique")
 
     for node in G.nodes:
-        G.nodes[node]["labels"] = str(node)
+        G.nodes[node]["clique"] = str(node)
 
     preprocess(G)
     r = RangedHeap(G)
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     r.prinf_bool_fs()
     r.print_fs()
     print(r.getRand())
-    
+
     print("_________________________________************************************____________________________________________")
     r.prinf_bool_fs()
     r.print_fs()

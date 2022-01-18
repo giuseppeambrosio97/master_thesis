@@ -12,23 +12,23 @@ if __name__ == "__main__":
         "data/bio/bio-HS-HT.edges",
         "data/bio/bio-grid-plant.edges",
         "data/bio/bio-grid-worm.edges"
-    ] 
+    ]
 
     s = ""
     for dataset in datasets:
         G = read_graph(dataset)
         nx.set_edge_attributes(G, 1, 'weight')
         nx.set_edge_attributes(G, -1, 'f')
-        nx.set_node_attributes(G, "", "labels")
+        nx.set_node_attributes(G, "", "clique")
 
         for node in G.nodes:
-            G.nodes[node]["labels"] = str(node)
+            G.nodes[node]["clique"] = str(node)
 
         start_k = time.time()
         value = clustering_deleteting_choice_deleted_edge_greedy(G)
         end_k = time.time() - start_k
-        s += "dataset " + str(dataset) + "\n" 
+        s += "dataset " + str(dataset) + "\n"
         s += "execution time " + str(end_k) + "\n"
         s += "value " + str(value) + "\n"
-        s += "*********************************"    
+        s += "*********************************"
     print(s)

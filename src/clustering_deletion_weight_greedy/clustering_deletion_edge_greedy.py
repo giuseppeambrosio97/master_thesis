@@ -152,7 +152,7 @@ def edge_contraction(G, e, rangedHeap):
         G[e[0]][node]['weight'] += G[e[1]][node]['weight']
         rangedHeap.add(e[0], node, G[e[0]][node]['weight'])
 
-    G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
+    G.nodes[e[0]]["clique"] += "-" + G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
     return val

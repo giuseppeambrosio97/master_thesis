@@ -16,43 +16,51 @@ class EdgeBean:
         self.old_f = self.f
 
     def delete_v_out_Ne0_e1(self,v):
-        if v in self.Ne0_e1:
-            self.Ne0_e1.remove(v)
-        else:
-            print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
-            self.print_EdgeBean()
+        # if v in self.Ne0_e1:
+            # self.Ne0_e1.remove(v)
+        # else:
+        #     print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
+        #     self.print_EdgeBean()
+        self.Ne0_e1.remove(v)
+
 
     def delete_v_out_Ne1_e0(self, v):
-        if v in self.Ne1_e0:
-            self.Ne1_e0.remove(v)
-        else:
-            print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
-            self.print_EdgeBean()
+        # if v in self.Ne1_e0:
+        #     self.Ne1_e0.remove(v)
+        # else:
+        #     print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
+        #     self.print_EdgeBean()
+        self.Ne1_e0.remove(v)
 
 
     def delete_v_in(self, v):
-        if v in self.Ne0e1:
-            self.Ne0e1.remove(v)
-        else:
-            print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
-            self.print_EdgeBean()
-    
+        # if v in self.Ne0e1:
+        #     self.Ne0e1.remove(v)
+        # else:
+        #     print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
+        #     self.print_EdgeBean()
+        self.Ne0e1.remove(v)
+
     def delete_v_out_Ne0_e1_f(self, G,v):
-        if v in self.Ne0_e1:
-            self.Ne0_e1.remove(v)
-            self.f -= G[self.e0][v]["EdgeBean"].weight
-        else:
-            print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
-            self.print_EdgeBean()
-
+        # if v in self.Ne0_e1:
+        #     self.Ne0_e1.remove(v)
+        #     self.f -= G[self.e0][v]["EdgeBean"].weight
+        # else:
+        #     print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
+        #     self.print_EdgeBean()
+        self.Ne0_e1.remove(v)
+        self.f -= G[self.e0][v]["EdgeBean"].weight
+        
     def delete_v_out_Ne1_e0_f(self,G,v):
-        if v in self.Ne1_e0:
-            self.Ne1_e0.remove(v)
-            self.f -= G[self.e1][v]["EdgeBean"].weight
-        else:
-            print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
-            self.print_EdgeBean()
-
+        # if v in self.Ne1_e0:
+        #     self.Ne1_e0.remove(v)
+        #     self.f -= G[self.e1][v]["EdgeBean"].weight
+        # else:
+        #     print("ERRORE nodo non nel vicinato, ho cercato di eliminare il node v ", v)
+        #     self.print_EdgeBean()
+        self.Ne1_e0.remove(v)
+        self.f -= G[self.e1][v]["EdgeBean"].weight
+        
     def add_v_out_Ne0_e1(self, G, v):
         self.Ne0_e1.add(v)
         self.f += G[self.e0][v]["EdgeBean"].weight
@@ -136,8 +144,28 @@ class RangedHeap:
             if weight_max < w:
                 weight_max = w
                 edge_to_pick = e
+            # elif weight_max == w:
+            #     if edge_to_pick[0] < e[0]:
+            #         edge_to_pick = e
         self.fs[self.bool_fs[0]].remove(edge_to_pick)
         return edge_to_pick
+
+    # def getMinTwins(self, G):
+    #     val_max = -math.inf
+    #     edge_to_pick = None
+    #     for e in self.fs[self.bool_fs[0]]:
+    #         edgeBean_e = G[e[0]][e[1]]['EdgeBean']
+    #         b = f_B(G, edgeBean_e) + edgeBean_e.weight
+    #         norm = b + edgeBean_e.f
+    #         w = b / norm 
+    #         if val_max < w:
+    #             val_max = w
+    #             edge_to_pick = e
+    #         # elif weight_max == w:
+    #         #     if edge_to_pick[0] < e[0]:
+    #         #         edge_to_pick = e
+    #     self.fs[self.bool_fs[0]].remove(edge_to_pick)
+    #     return edge_to_pick
 
     def delete_e(self, e0, e1, f):
         e = self.get_e(e0, e1)
@@ -285,6 +313,14 @@ def split_neighborhood(G, e):
 
     return vicini0 - vicini1, vicini0 & vicini1, vicini1 - vicini0
 
+def f_B(G,edgeBean):
+    val = 0
+    for node in edgeBean.Ne0e1:  # removed
+        val += G[edgeBean.e0][node]['EdgeBean'].weight + \
+            G[edgeBean.e1][node]['EdgeBean'].weight
+
+    return val
+
 
 def f(G, e):
     Ne0_e1, Ne1_e0 = xor(G, e)
@@ -427,9 +463,8 @@ def edge_contraction(G, e_edgeBean, rangedHeap):
     for node in Ne0_e1:  # removed
         G.remove_edge(e[0], node)
 
-    G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
+    G.nodes[e[0]]["clique"] = G.nodes[e[0]]["clique"].union(G.nodes[e[1]]["clique"])
     G.remove_node(e[1])
-
     # print("to delete " , deleted_edge)
 
 
@@ -450,8 +485,9 @@ def check_solution(G, G_sol, val):
 
     cliques = []
     n_nodes = 0
+
     for node in G_sol.nodes:
-        clique = G_sol.nodes[node]["labels"].split("-")
+        clique = G_sol.nodes[node]["clique"]
         n_nodes += len(clique)
         cliques.append(clique)
 
@@ -468,7 +504,7 @@ def check_solution(G, G_sol, val):
         return True
 
     for clique in cliques:
-        if not isClique(G, clique):
+        if not isClique(G, list(clique)):
             return "L'insieme di vertici {} non è una clique nel grafo di input".format(clique)
     if val == len(G.edges):
         return True
@@ -511,7 +547,7 @@ def deleted_edge_greedy_avoid(G):
 
         # s = ""
         # for node in G.nodes:
-        #     s += G.nodes[node]["labels"] + "|"
+        #     s += G.nodes[node]["clique"] + "|"
         # print(s)
         # print("SIZE ", len(rangedHeap))
         # print(rangedHeap.edges.keys())

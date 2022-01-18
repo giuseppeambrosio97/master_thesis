@@ -21,10 +21,10 @@ if __name__ == "__main__":
     for dataset in datasets:
         G = read_graph(dataset)
         nx.set_edge_attributes(G, 1, 'weight')
-        nx.set_node_attributes(G, "", "labels")
+        nx.set_node_attributes(G, "", "clique")
 
         for node in G.nodes:
-            G.nodes[node]["labels"] = str(node)
+            G.nodes[node]["clique"] = str(node)
 
         n = len(G.nodes)
         start_k = time.time()

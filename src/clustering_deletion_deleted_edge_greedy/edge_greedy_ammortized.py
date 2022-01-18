@@ -12,7 +12,7 @@ class RangedHeap:
             G[e[0]][e[1]]['f'] = val
             e = self.get_e(e[0], e[1])
             self.fs[val][e] = e
-        
+
         for id, id_map in enumerate(self.fs):
             if len(id_map) != 0:
                 self.current_min = id
@@ -31,12 +31,12 @@ class RangedHeap:
         weight_max = -math.inf
         edge_to_pick = None
         if len(self.fs[self.current_min]) == 0:
-            for i in range(self.current_min+1,len(self.fs)):
+            for i in range(self.current_min+1, len(self.fs)):
                 if len(self.fs[i]) != 0:
                     self.current_min = i
                     break
 
-        for _,e in self.fs[self.current_min].items():
+        for _, e in self.fs[self.current_min].items():
             w = G[e[0]][e[1]]['weight']
             if weight_max < w:
                 weight_max = w
@@ -66,7 +66,6 @@ class RangedHeap:
         self.delete_e(e[0], e[1], old_f)
         self.add(e[0], e[1], new_f)
 
-
     def get_e(self, e0, e1):
         return (e0, e1) if int(e0) < int(e1) else (e1, e0)
 
@@ -77,7 +76,6 @@ class RangedHeap:
                 values += " " + str(value)
             s = "[" + str(id) + "]->" + values + "\n"
             print(s)
-
 
     def __len__(self):
         return self.size
@@ -125,8 +123,7 @@ def edge_contraction(G, e, rangedHeap):
         rangedHeap.delete_e(e[0], node, G[e[0]][node]['f'])
         rangedHeap.delete_e(e[1], node, G[e[1]][node]['f'])
 
-
-    G.nodes[e[0]]["labels"] += "-" + G.nodes[e[1]]["labels"]
+    G.nodes[e[0]]["clique"] += "-" + G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
     for node in Ne0e1:

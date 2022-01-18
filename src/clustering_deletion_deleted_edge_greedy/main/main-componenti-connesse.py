@@ -11,5 +11,5 @@ if __name__ == "__main__":
     for comp in comps:
         print(comp)
 
-    # nx.draw(G, with_labels=True)
+    # nx.draw(G, with_clique=True)
     # plt.show()
