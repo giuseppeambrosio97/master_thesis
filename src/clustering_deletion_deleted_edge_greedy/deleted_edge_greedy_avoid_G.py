@@ -104,7 +104,8 @@ class EdgeBean:
 class RangedHeap:
     def __init__(self, G) -> None:
         self.size = len(G.edges)
-        self.fs = [set() for _ in range(len(G.nodes))]
+        # self.fs = [set() for _ in range(len(G.nodes))]
+        self.fs = [set() for _ in range(self.size)]
         self.bool_fs = []
         # self.edges = {}
 
@@ -197,6 +198,7 @@ class RangedHeap:
         self.delete_e_old(e0, e1, old_f)
 
         f = edgeBean.f
+
         self.add(e0, e1, f)
 
         edgeBean.adjust_f()

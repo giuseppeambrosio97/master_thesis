@@ -5,14 +5,14 @@ from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G imp
 if __name__ == "__main__":
 
     datasets = [
-        # "data/cur_data_exp/FB1",
-        "data/cur_data_exp/FB1 copy",
-        # "data/cur_data_exp/FB2",
-        # "data/bio/bio-CE-GT",
-        # "data/bio/bio-SC-CC",
-        # "data/bio/bio-HS-HT.edges",
-        # "data/bio/bio-grid-plant.edges",
-        # "data/bio/bio-grid-worm.edges",
+        "data/exp/inputs/HC_small/HC_3_20_0.3.txt",
+        # "data/exp/inputs/HC_small/HC_3_10_0.2.txt",
+        # "data/exp/inputs/HC_small/HC_3_15_0.2.txt",
+        # "data/exp/inputs/HC_small/HC_3_20_0.2.txt",
+        # "data/exp/inputs/HC_small/HC_3_15_0.3.txt",
+        # "data/exp/inputs/HC_small/HC_3_15_0.1.txt",
+        # "data/exp/inputs/HC_small/HC_3_10_0.3.txt",
+        # "data/exp/inputs/HC_small/HC_6_20_0.3.txt",
     ] 
 
     s = ""
@@ -28,11 +28,14 @@ if __name__ == "__main__":
         for node in G_sol.nodes:
             G_sol.nodes[node]["clique"] = set([node])
 
+        print("n = {}, m = {}".format(len(G.nodes), len(G.edges)))
+
         start_k = time.time()
         value = deleted_edge_greedy_avoid(G_sol)
         end_k = time.time() - start_k
         isCorrect = check_solution(G.copy(), G_sol, value)
-        s += "dataset " + str(dataset) + "\n" 
+        s += "dataset " + str(dataset) + "\n"
+        s += "n = {}, m = {}".format(len(G.nodes),len(G.edges)) + "\n"
         s += "execution time " + str(end_k) + "\n"
         s += "value " + str(value) + "\n"
         s += "isCorrect " + str(isCorrect) + "\n"

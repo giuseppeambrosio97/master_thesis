@@ -78,8 +78,10 @@ def read_graph(dataset):
 
     G = nx.Graph()
     for row in file:
-        edge_str = row.rstrip('\n')
-        edge_pair = edge_str.split(" ")
-        G.add_edge(int(edge_pair[0]), int(edge_pair[1]))
+        if row[0] != '#':
+            edge_str = row.rstrip('\n')
+            edge_pair = edge_str.split(" ")
+            if len(edge_pair) >= 2:
+                G.add_edge(int(edge_pair[0]), int(edge_pair[1]))
 
     return G
