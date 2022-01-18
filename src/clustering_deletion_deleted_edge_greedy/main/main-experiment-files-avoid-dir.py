@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     car = "RAND"
 
-    datasetdir = "data/exp/inputs/{}/".format(car)
+    datasetdir = "data/exp/{}/{}/".format("inputs", car)
 
 
     datasets = read_dataset(datasetdir)
@@ -37,6 +37,6 @@ if __name__ == "__main__":
         df.at[i, "Time"] = end_k
         df.at[i, "isCorrect"] = isCorrect
 
-    df.to_csv("data/exp/outputs/HC_large.csv")
+    df.to_csv("data/exp/{}/{}.csv".format("outputs", car))
     print(df)
 
