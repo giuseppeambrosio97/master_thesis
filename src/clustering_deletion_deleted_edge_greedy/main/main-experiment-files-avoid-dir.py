@@ -12,27 +12,25 @@ if __name__ == "__main__":
 
     datasets = read_dataset(datasetdir)
 
+    columns = ["Dataset name", "n", "m","Solution value", "Time", "isCorrect"]
+
     df = pd.DataFrame(
-        columns=["Solution value", "Time", "isCorrect"], index=range(len(datasets)))
+        columns=columns, index=range(len(datasets)))
 
 
     for i,dataset in enumerate(datasets):
         G = read_graph(dataset)
 
         G_sol = G.copy()
-        nx.set_node_attributes(G_sol, None, "clique")
-        nx.set_edge_attributes(G_sol, None, "EdgeBean")
-
-        for node in G_sol.nodes:
-            G_sol.nodes[node]["clique"] = set([node])
 
         start_k = time.time()
-        try:
-            value = deleted_edge_greedy_avoid(G_sol)
-        except:
-            print(dataset)
+        value = deleted_edge_greedy_avoid(G_sol)
         end_k = time.time() - start_k
         isCorrect = check_solution(G.copy(), G_sol, value)
+
+        df.at[i, "Dataset name"] = dataset
+        df.at[i, "n"] = len(G.nodes)
+        df.at[i, "m"] = len(G.edges)
         df.at[i, "Solution value"] = value
         df.at[i, "Time"] = end_k
         df.at[i, "isCorrect"] = isCorrect
