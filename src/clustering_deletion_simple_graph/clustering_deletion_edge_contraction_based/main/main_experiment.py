@@ -1,5 +1,5 @@
 from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.choice import choice_deleted_edge_greedy, choice_weight_greedy, choice_weight_softmax_random, choice_uniform_random, choice_weight_random, choice_entropy_greedy, choice_max_Ne0_e1
-from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.util_exp import experiments, plot_data_frame
+from src.clustering_deletion_simple_graph.util.util_exp import experiments, plot_data_frame
 
 if __name__ == "__main__":
     datasets = {

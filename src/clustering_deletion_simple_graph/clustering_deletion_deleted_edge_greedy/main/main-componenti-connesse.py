@@ -1,6 +1,6 @@
 import networkx as nx
 from networkx.algorithms.components import connected
-from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.util_exp import read_graph
+from src.clustering_deletion_simple_graph.util.util_exp import read_graph
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":

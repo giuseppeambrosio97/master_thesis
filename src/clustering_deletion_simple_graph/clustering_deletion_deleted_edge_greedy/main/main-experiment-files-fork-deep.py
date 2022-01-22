@@ -1,6 +1,6 @@
 import networkx as nx
 import time
-from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.util_exp import read_graph
+from src.clustering_deletion_simple_graph.util.util_exp import read_graph
 from clustering_deletion_deleted_edge_greedy.random_edge_greedy import alg
 if __name__ == "__main__":
 
