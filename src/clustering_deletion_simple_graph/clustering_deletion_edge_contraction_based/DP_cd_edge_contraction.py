@@ -1,6 +1,6 @@
 
 import math
-from src.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import edge_contraction
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import edge_contraction
 
 DP = {}
 
@@ -17,5 +17,3 @@ def DP_cd_edge_contraction(G):
             if(val < val_min):
                 val_min = val
         return val_min
-
-

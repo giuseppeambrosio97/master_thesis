@@ -1,6 +1,6 @@
-from src.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import *
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import *
 import time
-from src.clustering_deletion_edge_contraction_based.DP_cd_edge_contraction import DP_cd_edge_contraction
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.DP_cd_edge_contraction import DP_cd_edge_contraction
 
 if __name__ == "__main__":
     edge_list = [('1', '2'), ('2', '3'), ('1', '3'), ('1', '9'), ('1', '7'), ('1', '8'), ('7', '8'),

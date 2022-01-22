@@ -1,5 +1,5 @@
 import networkx as nx
-from src.clustering_deletion_edge_contraction_based.choice import *
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.choice import *
 
 
 def edge_contraction(G, e):

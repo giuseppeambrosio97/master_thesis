@@ -1,5 +1,5 @@
 import networkx as nx
-from src.clustering_deletion_edge_contraction_based.choice import choice_entropy_greedy, entropy_if_deleted_e
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.choice import choice_entropy_greedy, entropy_if_deleted_e
 
 if __name__ == "__main__":
     edge_list = [('1', '2'), ('2', '3'), ('1', '3'), ('1', '9'), ('1', '7'), ('1', '8'), ('7', '8'),

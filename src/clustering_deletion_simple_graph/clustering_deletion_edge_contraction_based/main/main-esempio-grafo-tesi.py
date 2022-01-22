@@ -1,4 +1,4 @@
-from src.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import *
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import *
 import time
 
 if __name__ == "__main__":
@@ -13,5 +13,3 @@ if __name__ == "__main__":
     end_k = time.time() - start_k
     print("value ", value, " nodes ", nodes)
     print("execution time ", end_k)
-
-

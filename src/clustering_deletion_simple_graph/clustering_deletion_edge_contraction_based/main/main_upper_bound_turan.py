@@ -1,4 +1,4 @@
-from src.clustering_deletion_edge_contraction_based.upper_bound_turan import upper_bound_turan
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.upper_bound_turan import upper_bound_turan
 import networkx as nx
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import networkx as nx
-from src.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import k_clustering_deletion_random_edge_contraction
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.clustering_deletion_edge_contraction import k_clustering_deletion_random_edge_contraction
 import time
 import matplotlib.pyplot as plt
 

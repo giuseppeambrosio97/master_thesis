@@ -1,24 +1,22 @@
 import networkx as nx
 import time
 import pandas as pd
-from src.clustering_deletion_edge_contraction_based.util_exp import read_graph, read_dataset
-from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import deleted_edge_greedy_avoid, check_solution
+from src.clustering_deletion_simple_graph.clustering_deletion_edge_contraction_based.util_exp import read_graph, read_dataset
+from src.clustering_deletion_simple_graph.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import deleted_edge_greedy_avoid, check_solution
 if __name__ == "__main__":
 
     car = "HC_large"
 
     datasetdir = "data/exp/{}/{}/".format("inputs", car)
 
-
     datasets = read_dataset(datasetdir)
 
-    columns = ["Dataset name", "n", "m","Solution value", "Time", "isCorrect"]
+    columns = ["Dataset name", "n", "m", "Solution value", "Time", "isCorrect"]
 
     df = pd.DataFrame(
         columns=columns, index=range(len(datasets)))
 
-
-    for i,dataset in enumerate(datasets):
+    for i, dataset in enumerate(datasets):
         G = read_graph(dataset)
 
         G_sol = G.copy()
@@ -37,4 +35,3 @@ if __name__ == "__main__":
 
     df.to_csv("data/exp/{}/{}.csv".format("outputs", car))
     print(df)
-

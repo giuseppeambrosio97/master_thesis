@@ -3,7 +3,7 @@ import math
 import random
 import numpy as np
 import networkx as nx
-from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import preprocess
+from src.clustering_deletion_simple_graph.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import preprocess
 
 
 class RangedHeap:
@@ -159,7 +159,7 @@ def edge_contraction(G, e, rangedHeap):
         G[e[0]][node]['weight'] += G[e[1]][node]['weight']
         rangedHeap.add(e[0], node, G[e[0]][node]['weight'])
 
-    G.nodes[e[0]]["clique"] |=  G.nodes[e[1]]["clique"]
+    G.nodes[e[0]]["clique"] |= G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
     return val
@@ -179,6 +179,7 @@ def clustering_deletion_choice_edge_greedy(G):
         value += edge_contraction(G, e, rangedHeap)
     return value
 
+
 def clustering_deletion_choice_edge_greedy_with_preprocess(G):
     preprocess(G)
 
@@ -187,13 +188,13 @@ def clustering_deletion_choice_edge_greedy_with_preprocess(G):
     for edge in G.edges:
         G[edge[0]][edge[1]]["weight"] = G[edge[0]][edge[1]]["EdgeBean"].weight
 
-    
     rangedHeap = RangedHeap(G)
     value = 0
     while len(rangedHeap) != 0:
         e = rangedHeap.getMax()
         value += edge_contraction(G, e, rangedHeap)
     return value
+
 
 def k_clustering_deletion_random_edge_contraction(G, k):
     """
