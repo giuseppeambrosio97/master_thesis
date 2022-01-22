@@ -5,7 +5,7 @@ from src.clustering_deletion_edge_contraction_based.util_exp import read_graph, 
 from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import deleted_edge_greedy_avoid, check_solution
 if __name__ == "__main__":
 
-    car = "RAND"
+    car = "HC_large"
 
     datasetdir = "data/exp/{}/{}/".format("inputs", car)
 

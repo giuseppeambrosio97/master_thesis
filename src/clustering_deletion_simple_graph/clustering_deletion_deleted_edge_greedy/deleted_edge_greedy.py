@@ -121,6 +121,8 @@ def preprocess(G):
         e = rangedHeap.getMin(G)
         if(G[e[0]][e[1]]['f'] > 0):
             break
+
+        value += 1
         edge_contraction(G, e, rangedHeap)
     return value
 

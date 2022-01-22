@@ -55,20 +55,20 @@ class EdgeBean:
 
     def merge(self, edgeBean, G):
         # self.weight += edgeBean.weight
-        self.Ne0e1 = self.Ne0e1.intersection(edgeBean.Ne0e1)
+        self.Ne0e1 &= edgeBean.Ne0e1
 
         if self.e1 == edgeBean.e1:
-            self.Ne0_e1 = self.Ne0_e1.intersection(edgeBean.Ne0_e1)
-            self.Ne1_e0 = self.Ne1_e0.union(edgeBean.Ne1_e0)
+            self.Ne0_e1 &= edgeBean.Ne0_e1
+            self.Ne1_e0 |= edgeBean.Ne1_e0
         elif self.e0 == edgeBean.e0:
-            self.Ne1_e0 = self.Ne1_e0.intersection(edgeBean.Ne1_e0)
-            self.Ne0_e1 = self.Ne0_e1.union(edgeBean.Ne0_e1)
+            self.Ne1_e0 &= edgeBean.Ne1_e0
+            self.Ne0_e1 |= edgeBean.Ne0_e1
         elif self.e0 == edgeBean.e1:
-            self.Ne1_e0 = self.Ne1_e0.intersection(edgeBean.Ne0_e1)
-            self.Ne0_e1 = self.Ne0_e1.union(edgeBean.Ne1_e0)
+            self.Ne1_e0 &= edgeBean.Ne0_e1
+            self.Ne0_e1 |= edgeBean.Ne1_e0
         else:
-            self.Ne0_e1 = self.Ne0_e1.intersection(edgeBean.Ne1_e0)
-            self.Ne1_e0 = self.Ne1_e0.union(edgeBean.Ne0_e1)
+            self.Ne0_e1 &= edgeBean.Ne1_e0
+            self.Ne1_e0 |= edgeBean.Ne0_e1
         self.f = f_with_edgeBean(self, G)
 
         return True if self.old_f != self.f else False
@@ -106,6 +106,9 @@ class RangedHeap:
             return G[e[0]][e[1]]['EdgeBean']
         else:
             print("RangedHeap is empty")
+
+    def get_f_Min(self):
+        return self.bool_fs[0]
 
     def getMinTwins(self, G):
         weight_max = -math.inf
@@ -221,10 +224,10 @@ class RangedHeap:
 
     def print_fs(self):
         for id, id_map in enumerate(self.fs):
-            values = ""
-            for key, value in id_map.items():
-                values += " " + str(value)
-            s = "[" + str(id) + "]->" + values + "\n"
+            edges = ""
+            for edge in id_map:
+                edges += " " + str(edge)
+            s = "[" + str(id) + "]->" + edges + "\n"
             print(s)
 
     def prinf_bool_fs(self):
@@ -239,14 +242,21 @@ class RangedHeap:
 
 
 def preprocess(G):
+    nx.set_node_attributes(G, None, "clique")
+    nx.set_edge_attributes(G, None, "EdgeBean")
+
+    for node in G.nodes:
+        G.nodes[node]["clique"] = set([node])
+
     rangedHeap = RangedHeap(G)
     value = 0
     while True:
-        e = rangedHeap.getMin(G)
-        if(G[e[0]][e[1]]['f'] > 0):
+        if rangedHeap.get_f_Min() > 0:
             break
-        edge_contraction(G, e, rangedHeap)
-    return value
+        edgeBean = rangedHeap.getMin(G)
+        value += 1
+        edge_contraction(G, edgeBean, rangedHeap)
+    return value, len(rangedHeap)
 
 
 def xor(G, e):
@@ -333,7 +343,7 @@ def edge_contraction(G, e_edgeBean, rangedHeap):
     for node in Ne0_e1:  # removed
         G.remove_edge(e[0], node)
 
-    G.nodes[e[0]]["clique"] = G.nodes[e[0]]["clique"].union(G.nodes[e[1]]["clique"])
+    G.nodes[e[0]]["clique"] |= G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
 

@@ -2,18 +2,20 @@ import seaborn as sns
 import math
 import random
 import numpy as np
+import networkx as nx
+from src.clustering_deletion_deleted_edge_greedy.deleted_edge_greedy_avoid_G import preprocess
 
 
 class RangedHeap:
     def __init__(self, G):
         self.size = len(G.edges)
-        self.fs = [{} for _ in range(len(G.nodes))]
+        self.fs = [set() for _ in range(len(G.nodes))]
         self.bool_fs = []
 
         for e in G.edges:
             val = G[e[0]][e[1]]['weight']
             e = self.get_e(e[0], e[1])
-            self.fs[val][e] = e
+            self.fs[val].add(e)
 
         # self.bool_fs.append(1)
         for id, id_map in enumerate(self.fs):
@@ -22,7 +24,7 @@ class RangedHeap:
 
     def getMax(self):
         if self.size >= 1:
-            out = self.getRandTwins()
+            out = self.getTwins()
             # out = self.fs[self.bool_fs[0]].popitem()[1]
             self.size -= 1
             if len(self.fs[self.bool_fs[-1]]) == 0:
@@ -31,6 +33,11 @@ class RangedHeap:
         else:
             print("RangedHeap is empty")
 
+    def getTwins(self):
+        edge_to_pick = list(self.fs[self.bool_fs[-1]])[0]
+        self.fs[self.bool_fs[-1]].remove(edge_to_pick)
+        return edge_to_pick
+
     def getRand(self):
         prob_list = [id*len(self.fs[id]) for id in self.bool_fs]
         norm = np.sum(prob_list)
@@ -38,21 +45,21 @@ class RangedHeap:
             prob_list[i] /= norm
 
         weight_to_pick = np.random.choice(self.bool_fs, size=1, p=prob_list)[0]
-        edge_to_pick = random.choice(list(self.fs[weight_to_pick].values()))
-        del self.fs[weight_to_pick][edge_to_pick]
+        edge_to_pick = random.choice(list(self.fs[weight_to_pick]))
+        self.fs[weight_to_pick].remove(edge_to_pick)
         self.size -= 1
         if len(self.fs[weight_to_pick]) == 0:
             self.binary_search_delete(weight_to_pick)
         return edge_to_pick
 
     def getRandTwins(self):
-        edge_to_pick = random.choice(list(self.fs[self.bool_fs[-1]].values()))
-        del self.fs[self.bool_fs[-1]][edge_to_pick]
+        edge_to_pick = random.choice(list(self.fs[self.bool_fs[-1]]))
+        self.fs[self.bool_fs[-1]].remove(edge_to_pick)
         return edge_to_pick
 
     def delete_e(self, e0, e1, f):
         e = self.get_e(e0, e1)
-        del self.fs[f][e]
+        self.fs[f].remove(e)
         self.size -= 1
 
         if len(self.fs[f]) == 0:
@@ -62,7 +69,7 @@ class RangedHeap:
         e = self.get_e(e0, e1)
         if len(self.fs[f]) == 0:
             self.binary_search_add(f)
-        self.fs[f][e] = e
+        self.fs[f].add(e)
         self.size += 1
 
     def adjust(self, e0, e1, old_f, new_f):
@@ -152,21 +159,41 @@ def edge_contraction(G, e, rangedHeap):
         G[e[0]][node]['weight'] += G[e[1]][node]['weight']
         rangedHeap.add(e[0], node, G[e[0]][node]['weight'])
 
-    G.nodes[e[0]]["clique"] += "-" + G.nodes[e[1]]["clique"]
+    G.nodes[e[0]]["clique"] |=  G.nodes[e[1]]["clique"]
     G.remove_node(e[1])
 
     return val
 
 
 def clustering_deletion_choice_edge_greedy(G):
-    rangedHeap = RangedHeap(G)
+    nx.set_edge_attributes(G, 1, 'weight')
+    nx.set_node_attributes(G, None, "clique")
 
+    for node in G.nodes:
+        G.nodes[node]["clique"] = set([node])
+
+    rangedHeap = RangedHeap(G)
     value = 0
     while len(rangedHeap) != 0:
         e = rangedHeap.getMax()
         value += edge_contraction(G, e, rangedHeap)
     return value
 
+def clustering_deletion_choice_edge_greedy_with_preprocess(G):
+    preprocess(G)
+
+    nx.set_edge_attributes(G, 1, 'weight')
+
+    for edge in G.edges:
+        G[edge[0]][edge[1]]["weight"] = G[edge[0]][edge[1]]["EdgeBean"].weight
+
+    
+    rangedHeap = RangedHeap(G)
+    value = 0
+    while len(rangedHeap) != 0:
+        e = rangedHeap.getMax()
+        value += edge_contraction(G, e, rangedHeap)
+    return value
 
 def k_clustering_deletion_random_edge_contraction(G, k):
     """
