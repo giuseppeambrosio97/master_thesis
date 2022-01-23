@@ -85,7 +85,6 @@ class RangedHeap:
             e = self.get_e(e[0], e[1])
             Ne0_e1, Ne0e1, Ne1_e0 = split_neighborhood(G, e)
             val = len(Ne0_e1) + len(Ne1_e0)
-            G[e[0]][e[1]]['f'] = val
             self.fs[val].add(e)
             G[e[0]][e[1]]['EdgeBean'] = EdgeBean(
                 1, e[0], e[1], Ne0_e1, Ne0e1, Ne1_e0, val)
@@ -323,7 +322,6 @@ def edge_contraction(G, e_edgeBean, rangedHeap):
 
     for node in Ne1_e0:  # removed
         rangedHeap.delete_e(e[1], node, G[e[1]][node]["EdgeBean"].f)
-    
 
     toAdjust_in_rangedHeap = set()
 
