@@ -1,3 +1,6 @@
+from sys import prefix
+
+
 class UPrefixCompressedLinearGraph:
     def __init__(self, n, prefixCode):
         self.n = n
@@ -12,3 +15,12 @@ class UPrefixCompressedLinearGraph:
             return "For the last node the upper bound is not defined"
         else:
             return "Index error"
+
+    def isConnected(self):
+        for i in range(len(self.prefix)):
+            if i == self.getU(i):
+                return False
+        return True
+    
+    def __len__(self):
+        return self.n
